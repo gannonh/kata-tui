@@ -52,36 +52,36 @@
 
 ## Out of Scope
 
-- **Dependency graph view** — High complexity, visualization adds risk for v1
-- **Full text editing** — Use $EDITOR; TUI is a viewer, not an editor
-- **Database/persistent state** — .planning/ files are the source of truth
-- **Network features** — Local project viewer only
-- **Plugin system** — Know the domain first, consider for v2+
-- **Windows support** — Focus on macOS/Linux for v1
+- **Dependency graph view** - High complexity, visualization adds risk for v1
+- **Full text editing** - Use $EDITOR; TUI is a viewer, not an editor
+- **Database/persistent state** - .planning/ files are the source of truth
+- **Network features** - Local project viewer only
+- **Plugin system** - Know the domain first, consider for v2+
+- **Windows support** - Focus on macOS/Linux for v1
 
 ## Traceability
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| DISP-01 | — | Pending |
-| DISP-02 | — | Pending |
-| DISP-03 | — | Pending |
-| DISP-04 | — | Pending |
-| DISP-05 | — | Pending |
-| NAV-01 | — | Pending |
-| NAV-02 | — | Pending |
-| NAV-03 | — | Pending |
-| NAV-04 | — | Pending |
-| NAV-05 | — | Pending |
-| REAL-01 | — | Pending |
-| REAL-02 | — | Pending |
-| CMD-01 | — | Pending |
-| CMD-02 | — | Pending |
-| REND-01 | — | Pending |
-| PLAT-01 | — | Pending |
-| PLAT-02 | — | Pending |
-| DIST-01 | — | Pending |
-| DIST-02 | — | Pending |
+| DISP-01 | Phase 1 | Pending |
+| DISP-02 | Phase 1 | Pending |
+| DISP-03 | Phase 1 | Pending |
+| DISP-04 | Phase 2 | Pending |
+| DISP-05 | Phase 2 | Pending |
+| NAV-01 | Phase 1 | Pending |
+| NAV-02 | Phase 1 | Pending |
+| NAV-03 | Phase 2 | Pending |
+| NAV-04 | Phase 2 | Pending |
+| NAV-05 | Phase 2 | Pending |
+| REAL-01 | Phase 3 | Pending |
+| REAL-02 | Phase 3 | Pending |
+| CMD-01 | Phase 4 | Pending |
+| CMD-02 | Phase 4 | Pending |
+| REND-01 | Phase 3 | Pending |
+| PLAT-01 | Phase 1 | Pending |
+| PLAT-02 | Phase 1 | Pending |
+| DIST-01 | Phase 5 | Pending |
+| DIST-02 | Phase 5 | Pending |
 
 ---
 *Last updated: 2026-01-25*
