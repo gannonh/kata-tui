@@ -2,44 +2,23 @@
 
 ## Overview
 
-kata-tui delivers a terminal dashboard for Kata project visibility in 5 phases. The roadmap progresses from core viewing capability (foundation + display) through real-time updates and command execution, culminating in distribution packaging. Each phase delivers a complete, verifiable capability.
+kata-tui delivers a terminal dashboard for Kata project visibility. v0.1 shipped the foundation (Phase 1). v1.0 continues with enhanced navigation, real-time updates, command integration, and distribution.
+
+## Milestones
+
+- **v0.1 Foundation Preview** — Phase 1 (shipped 2026-01-25) [archived](milestones/v0.1-ROADMAP.md)
+- **v1.0 MVP** — Phases 2-5 (in progress)
 
 ## Phases
 
-### Phase 1: Foundation & Core Display
+<details>
+<summary>v0.1 Foundation Preview (Phase 1) — SHIPPED 2026-01-25</summary>
 
-**Goal:** User can launch the TUI and see their .planning/ files as structured, navigable data.
+- [x] Phase 1: Foundation & Core Display (5/5 plans) — completed 2026-01-25
 
-**Dependencies:** None (first phase)
+</details>
 
-**Plans:** 5 plans
-
-Plans:
-- [x] 01-01-PLAN.md — Project scaffolding, terminal wrapper, panic hook
-- [x] 01-02-PLAN.md — TEA core (State/Message/Update) and event handler
-- [x] 01-03-PLAN.md — Data models and markdown parser
-- [x] 01-04-PLAN.md — Layout and UI components (tree, detail, status bar)
-- [x] 01-05-PLAN.md — View composition, App lifecycle, integration
-
-**Requirements:**
-- DISP-01: User can view .planning/ files parsed into structured data
-- DISP-02: User can see project hierarchy in a tree view
-- DISP-03: User can view detailed content of selected item in a detail pane
-- NAV-01: User can navigate using keyboard (vim-style j/k/h/l and arrow keys)
-- NAV-02: User can see clear visual focus indicators on the active element
-- PLAT-01: Application works on macOS
-- PLAT-02: Application works on Linux
-
-**Success Criteria:**
-1. User can run `kata-tui` in a project directory and see PROJECT.md, ROADMAP.md, STATE.md content
-2. User can navigate between phases/milestones using j/k or arrow keys
-3. User sees a highlighted border indicating which element has focus
-4. User can view details of any selected item in a right-side pane
-5. Application runs identically on macOS and Linux terminals
-
-**Research Notes:** Phase 1 architecture is critical. Must implement terminal cleanup on panic, async event loop with TEA pattern, and platform-aware key handling from day one per PITFALLS.md.
-
----
+### v1.0 MVP (Phases 2-5)
 
 ### Phase 2: Enhanced Display & Navigation
 
@@ -99,7 +78,7 @@ Plans:
 3. User can continue navigating the dashboard while a command runs
 4. User can see when a command completes (success/failure indicator)
 
-**Research Notes:** High complexity phase. If interactive subprocess support is required (commands needing user input), use `/kata:research-phase` for PTY handling investigation. Current implementation assumes non-interactive stdout/stderr capture.
+**Research Notes:** High complexity phase. If interactive subprocess support is required (commands needing user input), use `/kata:research-phase` for PTY handling investigation.
 
 ---
 
@@ -122,13 +101,13 @@ Plans:
 
 ## Progress
 
-| Phase | Name | Status | Requirements |
-|-------|------|--------|--------------|
-| 1 | Foundation & Core Display | ✓ Complete | DISP-01, DISP-02, DISP-03, NAV-01, NAV-02, PLAT-01, PLAT-02 |
-| 2 | Enhanced Display & Navigation | Pending | DISP-04, DISP-05, NAV-03, NAV-04, NAV-05 |
-| 3 | Real-time Updates & Markdown Rendering | Pending | REAL-01, REAL-02, REND-01 |
-| 4 | Command Integration | Pending | CMD-01, CMD-02 |
-| 5 | Distribution & Packaging | Pending | DIST-01, DIST-02 |
+| Phase | Milestone | Status | Requirements |
+|-------|-----------|--------|--------------|
+| 1 | v0.1 | Complete | DISP-01, DISP-02, DISP-03, NAV-01, NAV-02, PLAT-01, PLAT-02 |
+| 2 | v1.0 | Pending | DISP-04, DISP-05, NAV-03, NAV-04, NAV-05 |
+| 3 | v1.0 | Pending | REAL-01, REAL-02, REND-01 |
+| 4 | v1.0 | Pending | CMD-01, CMD-02 |
+| 5 | v1.0 | Pending | DIST-01, DIST-02 |
 
 ---
 *Last updated: 2026-01-25*

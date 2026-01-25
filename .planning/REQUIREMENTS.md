@@ -1,43 +1,35 @@
 # Requirements
 
-## v1 Requirements
+## v1.0 Requirements (Phases 2-5)
 
-### Core Display
+> v0.1 requirements (Phase 1) archived to [milestones/v0.1-REQUIREMENTS.md](milestones/v0.1-REQUIREMENTS.md)
 
-- [ ] **DISP-01**: User can view .planning/ files parsed into structured data (PROJECT.md, ROADMAP.md, STATE.md)
-- [ ] **DISP-02**: User can see project hierarchy in a tree view (phases/milestones/requirements)
-- [ ] **DISP-03**: User can view detailed content of selected item in a detail pane
+### Enhanced Display (Phase 2)
+
 - [ ] **DISP-04**: User can see color-coded status indicators for phases and milestones
 - [ ] **DISP-05**: User can see progress bars showing completion percentages
 
-### Navigation
+### Enhanced Navigation (Phase 2)
 
-- [ ] **NAV-01**: User can navigate using keyboard (vim-style j/k/h/l and arrow keys)
-- [ ] **NAV-02**: User can see clear visual focus indicators on the active element
 - [ ] **NAV-03**: User can expand and collapse tree nodes
 - [ ] **NAV-04**: User can view help with keybindings by pressing ?
 - [ ] **NAV-05**: User can fuzzy search/filter items by pressing /
 
-### Real-time
+### Real-time (Phase 3)
 
 - [ ] **REAL-01**: System watches .planning/ directory for file changes
 - [ ] **REAL-02**: UI automatically refreshes when files change
 
-### Command Integration
+### Rendering (Phase 3)
+
+- [ ] **REND-01**: User can see markdown content rendered with formatting in the detail pane
+
+### Command Integration (Phase 4)
 
 - [ ] **CMD-01**: User can execute Kata commands from the TUI
 - [ ] **CMD-02**: User can see command output in a split-pane layout
 
-### Rendering
-
-- [ ] **REND-01**: User can see markdown content rendered with formatting in the detail pane
-
-### Platform Support
-
-- [ ] **PLAT-01**: Application works on macOS
-- [ ] **PLAT-02**: Application works on Linux
-
-### Distribution
+### Distribution (Phase 5)
 
 - [ ] **DIST-01**: User can install via `cargo install kata-tui`
 - [ ] **DIST-02**: User can download prebuilt binaries from GitHub releases
@@ -63,23 +55,16 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| DISP-01 | Phase 1 | Pending |
-| DISP-02 | Phase 1 | Pending |
-| DISP-03 | Phase 1 | Pending |
 | DISP-04 | Phase 2 | Pending |
 | DISP-05 | Phase 2 | Pending |
-| NAV-01 | Phase 1 | Pending |
-| NAV-02 | Phase 1 | Pending |
 | NAV-03 | Phase 2 | Pending |
 | NAV-04 | Phase 2 | Pending |
 | NAV-05 | Phase 2 | Pending |
 | REAL-01 | Phase 3 | Pending |
 | REAL-02 | Phase 3 | Pending |
+| REND-01 | Phase 3 | Pending |
 | CMD-01 | Phase 4 | Pending |
 | CMD-02 | Phase 4 | Pending |
-| REND-01 | Phase 3 | Pending |
-| PLAT-01 | Phase 1 | Pending |
-| PLAT-02 | Phase 1 | Pending |
 | DIST-01 | Phase 5 | Pending |
 | DIST-02 | Phase 5 | Pending |
 

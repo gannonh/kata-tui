@@ -4,6 +4,13 @@
 
 A terminal user interface dashboard for Kata projects that provides real-time visibility into project status — phases, milestones, plans, and recent activity — all in one glance.
 
+## Current State
+
+**v0.1 Foundation Preview** shipped 2026-01-25. Users can launch `kata-tui` and view their `.planning/` files as structured, navigable data with vim-style keyboard navigation.
+
+**Tech stack:** Rust + Ratatui 0.28 + Crossterm 0.28 + Tokio
+**Codebase:** ~1,650 LOC Rust across 18 source files, 11 tests
+
 ## Core Value
 
 **Visibility.** Kata projects generate rich planning artifacts (.planning/ files) but there's no easy way to see the big picture. This dashboard surfaces that structure so users always know where they are, what's done, and what's next.
@@ -75,25 +82,28 @@ Kata users — anyone using Kata for project planning and execution. This is a c
 
 ### Validated
 
-(None yet — ship to validate)
+- DISP-01: User can view .planning/ files parsed into structured data — v0.1
+- DISP-02: User can see project hierarchy in a tree view — v0.1
+- DISP-03: User can view detailed content of selected item in a detail pane — v0.1
+- NAV-01: User can navigate using keyboard (vim-style j/k/h/l and arrow keys) — v0.1
+- NAV-02: User can see clear visual focus indicators on the active element — v0.1
+- PLAT-01: Application works on macOS — v0.1
+- PLAT-02: Application works on Linux — v0.1
 
 ### Active
 
-- [ ] Display current phase progress with plan completion status
-- [ ] Show success criteria checkboxes for current phase
-- [ ] Phase list sidebar with status indicators
-- [ ] Keyboard navigation between phases
-- [ ] Milestone summary panel
-- [ ] Recent activity display (commits, file changes)
-- [ ] File watching for real-time updates
-- [ ] Expand/collapse for plan details
-- [ ] Copy Kata commands to clipboard
-- [ ] Launch commands with split view output
-- [ ] Parse Kata .planning/ file formats
-- [ ] macOS support
-- [ ] Linux support
-- [ ] Cargo install distribution
-- [ ] Binary releases via GitHub
+- [ ] DISP-04: Color-coded status indicators for phases and milestones
+- [ ] DISP-05: Progress bars showing completion percentages
+- [ ] NAV-03: Expand/collapse tree nodes
+- [ ] NAV-04: Help overlay with keybindings (? key)
+- [ ] NAV-05: Fuzzy search/filter (/ key)
+- [ ] REAL-01: File watching on .planning/ directory
+- [ ] REAL-02: Auto-refresh on file changes
+- [ ] REND-01: Markdown rendering in detail pane
+- [ ] CMD-01: Execute Kata commands from TUI
+- [ ] CMD-02: Command output in split-pane layout
+- [ ] DIST-01: Cargo install distribution
+- [ ] DIST-02: Binary releases via GitHub
 
 ### Out of Scope
 
@@ -106,10 +116,17 @@ Kata users — anyone using Kata for project planning and execution. This is a c
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Rust + Ratatui | Fast, single binary, modern TUI ecosystem, good cross-platform support | — Pending |
-| File watching over polling | Instant updates, lower resource usage | — Pending |
-| Split view for commands | Keep context visible while running commands | — Pending |
-| No Windows v1 | Reduce scope, target primary Kata user platforms | — Pending |
+| Rust + Ratatui | Fast, single binary, modern TUI ecosystem, good cross-platform support | Implemented |
+| TEA architecture | Predictable state management, ratatui recommendation | Implemented |
+| Tokio async runtime | Non-blocking file watching and event handling | Implemented |
+| Two-pane layout (Phase 1) | Simpler; output pane not needed until command execution | Implemented |
+| 30/70 pane split | Standard dashboard ratio | Implemented |
+| Semantic tree hierarchy | Users care about phases/requirements, not file names | Implemented |
+| Auto-select current phase | Immediate context at launch | Implemented |
+| Minimum terminal 60x16 | Graceful handling with friendly message | Implemented |
+| File watching over polling | Instant updates, lower resource usage | — Pending (Phase 3) |
+| Split view for commands | Keep context visible while running commands | — Pending (Phase 4) |
+| No Windows v1 | Reduce scope, target primary Kata user platforms | — Standing |
 
 ---
-*Last updated: 2026-01-25 after initialization*
+*Last updated: 2026-01-25 after v0.1 milestone*
