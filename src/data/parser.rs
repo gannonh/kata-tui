@@ -81,9 +81,7 @@ fn load_project(path: &Path) -> Result<Project> {
     // Handle last section
     if !current_section.is_empty() && !text_buffer.is_empty() {
         match current_section.to_lowercase().as_str() {
-            s if s.contains("core value") => {
-                project.description = text_buffer.trim().to_string()
-            }
+            s if s.contains("core value") => project.description = text_buffer.trim().to_string(),
             s if s.contains("problem") => project.problem = text_buffer.trim().to_string(),
             s if s.contains("solution") => project.solution = text_buffer.trim().to_string(),
             _ => {}

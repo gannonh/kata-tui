@@ -13,7 +13,10 @@ use crate::data::{Phase, PlanningData, Requirement};
 pub enum TreeItem {
     Project(String),
     Phase(Phase),
-    Requirement { phase_num: u8, requirement: Requirement },
+    Requirement {
+        phase_num: u8,
+        requirement: Requirement,
+    },
 }
 
 impl TreeItem {
