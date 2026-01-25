@@ -29,11 +29,11 @@ kata-tui delivers a terminal dashboard for Kata project visibility. v0.1 shipped
 **Plans:** 5 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — InputMode state + color-coded status indicators (DISP-04)
-- [ ] 02-02-PLAN.md — Expand/collapse tree nodes (NAV-03)
-- [ ] 02-03-PLAN.md — Progress bars for completion percentages (DISP-05)
-- [ ] 02-04-PLAN.md — Help overlay with keybindings (NAV-04)
-- [ ] 02-05-PLAN.md — Fuzzy search/filter (NAV-05)
+- [x] 02-01-PLAN.md — InputMode state + color-coded status indicators (DISP-04)
+- [x] 02-02-PLAN.md — Expand/collapse tree nodes (NAV-03)
+- [x] 02-03-PLAN.md — Progress bars for completion percentages (DISP-05)
+- [x] 02-04-PLAN.md — Help overlay with keybindings (NAV-04)
+- [x] 02-05-PLAN.md — Fuzzy search/filter (NAV-05)
 
 **Requirements:**
 - DISP-04: User can see color-coded status indicators for phases and milestones
@@ -113,7 +113,7 @@ Plans:
 | Phase | Milestone | Status | Requirements |
 |-------|-----------|--------|--------------|
 | 1 | v0.1 | Complete | DISP-01, DISP-02, DISP-03, NAV-01, NAV-02, PLAT-01, PLAT-02 |
-| 2 | v1.0 | Planned | DISP-04, DISP-05, NAV-03, NAV-04, NAV-05 |
+| 2 | v1.0 | Complete | DISP-04, DISP-05, NAV-03, NAV-04, NAV-05 |
 | 3 | v1.0 | Pending | REAL-01, REAL-02, REND-01 |
 | 4 | v1.0 | Pending | CMD-01, CMD-02 |
 | 5 | v1.0 | Pending | DIST-01, DIST-02 |
