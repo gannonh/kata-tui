@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 description = "Terminal dashboard for Kata project visibility"
 license = "MIT"
-repository = "https://github.com/user/kata-tui"
+repository = "https://github.com/gannonh/kata-tui"
 
 [dependencies]
 # TUI Framework
