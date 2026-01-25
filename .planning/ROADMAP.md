@@ -12,6 +12,15 @@ kata-tui delivers a terminal dashboard for Kata project visibility in 5 phases. 
 
 **Dependencies:** None (first phase)
 
+**Plans:** 5 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Project scaffolding, terminal wrapper, panic hook
+- [ ] 01-02-PLAN.md — TEA core (State/Message/Update) and event handler
+- [ ] 01-03-PLAN.md — Data models and markdown parser
+- [ ] 01-04-PLAN.md — Layout and UI components (tree, detail, status bar)
+- [ ] 01-05-PLAN.md — View composition, App lifecycle, integration
+
 **Requirements:**
 - DISP-01: User can view .planning/ files parsed into structured data
 - DISP-02: User can see project hierarchy in a tree view
@@ -115,7 +124,7 @@ kata-tui delivers a terminal dashboard for Kata project visibility in 5 phases. 
 
 | Phase | Name | Status | Requirements |
 |-------|------|--------|--------------|
-| 1 | Foundation & Core Display | Pending | DISP-01, DISP-02, DISP-03, NAV-01, NAV-02, PLAT-01, PLAT-02 |
+| 1 | Foundation & Core Display | Planning | DISP-01, DISP-02, DISP-03, NAV-01, NAV-02, PLAT-01, PLAT-02 |
 | 2 | Enhanced Display & Navigation | Pending | DISP-04, DISP-05, NAV-03, NAV-04, NAV-05 |
 | 3 | Real-time Updates & Markdown Rendering | Pending | REAL-01, REAL-02, REND-01 |
 | 4 | Command Integration | Pending | CMD-01, CMD-02 |
