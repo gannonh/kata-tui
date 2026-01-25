@@ -51,10 +51,10 @@ impl EventHandler {
                                     CrosstermEvent::Key(key) => {
                                         // CRITICAL: Only handle Press events for cross-platform compatibility
                                         // Windows sends Press+Release, macOS/Linux may vary
-                                        if key.kind == KeyEventKind::Press {
-                                            if tx.send(Event::Key(key)).is_err() {
-                                                break;
-                                            }
+                                        if key.kind == KeyEventKind::Press
+                                            && tx.send(Event::Key(key)).is_err()
+                                        {
+                                            break;
                                         }
                                     }
                                     CrosstermEvent::Resize(w, h) => {
