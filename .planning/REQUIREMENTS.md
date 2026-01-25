@@ -4,16 +4,16 @@
 
 > v0.1 requirements (Phase 1) archived to [milestones/v0.1-REQUIREMENTS.md](milestones/v0.1-REQUIREMENTS.md)
 
-### Enhanced Display (Phase 2)
+### Enhanced Display (Phase 2) ✓
 
-- [ ] **DISP-04**: User can see color-coded status indicators for phases and milestones
-- [ ] **DISP-05**: User can see progress bars showing completion percentages
+- [x] **DISP-04**: User can see color-coded status indicators for phases and milestones
+- [x] **DISP-05**: User can see progress bars showing completion percentages
 
-### Enhanced Navigation (Phase 2)
+### Enhanced Navigation (Phase 2) ✓
 
-- [ ] **NAV-03**: User can expand and collapse tree nodes
-- [ ] **NAV-04**: User can view help with keybindings by pressing ?
-- [ ] **NAV-05**: User can fuzzy search/filter items by pressing /
+- [x] **NAV-03**: User can expand and collapse tree nodes
+- [x] **NAV-04**: User can view help with keybindings by pressing ?
+- [x] **NAV-05**: User can fuzzy search/filter items by pressing /
 
 ### Real-time (Phase 3)
 
@@ -55,11 +55,11 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| DISP-04 | Phase 2 | Pending |
-| DISP-05 | Phase 2 | Pending |
-| NAV-03 | Phase 2 | Pending |
-| NAV-04 | Phase 2 | Pending |
-| NAV-05 | Phase 2 | Pending |
+| DISP-04 | Phase 2 | Complete |
+| DISP-05 | Phase 2 | Complete |
+| NAV-03 | Phase 2 | Complete |
+| NAV-04 | Phase 2 | Complete |
+| NAV-05 | Phase 2 | Complete |
 | REAL-01 | Phase 3 | Pending |
 | REAL-02 | Phase 3 | Pending |
 | REND-01 | Phase 3 | Pending |
@@ -69,4 +69,4 @@
 | DIST-02 | Phase 5 | Pending |
 
 ---
-*Last updated: 2026-01-25*
+*Last updated: 2026-01-25 — Phase 2 complete*
