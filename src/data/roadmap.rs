@@ -1,3 +1,5 @@
+use ratatui::style::Color;
+
 /// Status of a requirement
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum RequirementStatus {
@@ -13,6 +15,15 @@ impl RequirementStatus {
             Self::Complete
         } else {
             Self::Pending
+        }
+    }
+
+    /// Get the display color for this status
+    pub fn color(&self) -> Color {
+        match self {
+            RequirementStatus::Complete => Color::Green,
+            RequirementStatus::InProgress => Color::Yellow,
+            RequirementStatus::Pending => Color::DarkGray,
         }
     }
 }
@@ -35,6 +46,17 @@ pub enum PhaseStatus {
     Pending,
     InProgress,
     Complete,
+}
+
+impl PhaseStatus {
+    /// Get the display color for this status
+    pub fn color(&self) -> Color {
+        match self {
+            PhaseStatus::Complete => Color::Green,
+            PhaseStatus::InProgress => Color::Yellow,
+            PhaseStatus::Pending => Color::DarkGray,
+        }
+    }
 }
 
 /// A project phase

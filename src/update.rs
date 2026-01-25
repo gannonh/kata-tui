@@ -1,4 +1,4 @@
-use crate::state::{AppState, FocusedPane, Message};
+use crate::state::{AppState, FocusedPane, InputMode, Message};
 
 /// Maximum number of items in tree (will be dynamic later)
 const MAX_TREE_ITEMS: usize = 10;
@@ -105,6 +105,81 @@ pub fn update(state: &mut AppState, message: Message) -> bool {
             true
         }
 
+        Message::ToggleExpand(phase_num) => {
+            state.toggle_expansion(phase_num);
+            true
+        }
+
+        Message::ShowHelp => {
+            state.input_mode = InputMode::Help;
+            true
+        }
+
+        Message::HideHelp => {
+            state.input_mode = InputMode::Normal;
+            true
+        }
+
+        Message::EnterSearchMode => {
+            state.input_mode = InputMode::Search;
+            state.search_query.clear();
+            state.search_matches.clear();
+            state.current_match = 0;
+            true
+        }
+
+        Message::ExitSearchMode => {
+            state.input_mode = InputMode::Normal;
+            // Keep search_query so user can see what they searched
+            true
+        }
+
+        Message::SearchInput(c) => {
+            state.search_query.push(c);
+            // Matches will be computed in app layer with access to tree_items
+            true
+        }
+
+        Message::SearchBackspace => {
+            state.search_query.pop();
+            true
+        }
+
+        Message::ConfirmSearch => {
+            if !state.search_matches.is_empty() {
+                // Select the current match
+                let match_idx = state.search_matches[state.current_match];
+                state.tree_state.select(Some(match_idx));
+                state.selected_index = match_idx;
+            }
+            state.input_mode = InputMode::Normal;
+            true
+        }
+
+        Message::NextMatch => {
+            if !state.search_matches.is_empty() {
+                state.current_match = (state.current_match + 1) % state.search_matches.len();
+                let match_idx = state.search_matches[state.current_match];
+                state.tree_state.select(Some(match_idx));
+                state.selected_index = match_idx;
+            }
+            true
+        }
+
+        Message::PrevMatch => {
+            if !state.search_matches.is_empty() {
+                state.current_match = if state.current_match == 0 {
+                    state.search_matches.len() - 1
+                } else {
+                    state.current_match - 1
+                };
+                let match_idx = state.search_matches[state.current_match];
+                state.tree_state.select(Some(match_idx));
+                state.selected_index = match_idx;
+            }
+            true
+        }
+
         Message::Tick => {
             // Future: refresh data, animations
             false
@@ -112,29 +187,50 @@ pub fn update(state: &mut AppState, message: Message) -> bool {
     }
 }
 
-/// Convert keyboard event to Message
-pub fn key_to_message(key: crossterm::event::KeyEvent) -> Option<Message> {
+/// Convert keyboard event to Message based on current input mode
+pub fn key_to_message(key: crossterm::event::KeyEvent, input_mode: InputMode) -> Option<Message> {
     use crossterm::event::KeyCode;
 
-    match key.code {
-        // Quit
-        KeyCode::Char('q') | KeyCode::Esc => Some(Message::Quit),
+    match input_mode {
+        InputMode::Normal => match key.code {
+            // Quit
+            KeyCode::Char('q') | KeyCode::Esc => Some(Message::Quit),
 
-        // Navigation - vim style
-        KeyCode::Char('j') | KeyCode::Down => Some(Message::NavigateDown),
-        KeyCode::Char('k') | KeyCode::Up => Some(Message::NavigateUp),
-        KeyCode::Char('h') | KeyCode::Left => Some(Message::NavigateLeft),
-        KeyCode::Char('l') | KeyCode::Right => Some(Message::NavigateRight),
+            // Help
+            KeyCode::Char('?') => Some(Message::ShowHelp),
 
-        // Selection
-        KeyCode::Enter => Some(Message::Select),
-        KeyCode::Tab => Some(Message::SwitchPane),
+            // Search
+            KeyCode::Char('/') => Some(Message::EnterSearchMode),
 
-        // Scrolling
-        KeyCode::PageUp => Some(Message::ScrollUp),
-        KeyCode::PageDown => Some(Message::ScrollDown),
+            // Navigation - vim style
+            KeyCode::Char('j') | KeyCode::Down => Some(Message::NavigateDown),
+            KeyCode::Char('k') | KeyCode::Up => Some(Message::NavigateUp),
+            KeyCode::Char('h') | KeyCode::Left => Some(Message::NavigateLeft),
+            KeyCode::Char('l') | KeyCode::Right => Some(Message::NavigateRight),
 
-        _ => None,
+            // Selection
+            KeyCode::Enter => Some(Message::Select),
+            KeyCode::Tab => Some(Message::SwitchPane),
+
+            // Scrolling
+            KeyCode::PageUp => Some(Message::ScrollUp),
+            KeyCode::PageDown => Some(Message::ScrollDown),
+
+            _ => None,
+        },
+        InputMode::Help => match key.code {
+            KeyCode::Esc | KeyCode::Char('?') | KeyCode::Char('q') => Some(Message::HideHelp),
+            _ => None, // Ignore other keys in help mode
+        },
+        InputMode::Search => match key.code {
+            KeyCode::Esc => Some(Message::ExitSearchMode),
+            KeyCode::Enter => Some(Message::ConfirmSearch),
+            KeyCode::Backspace => Some(Message::SearchBackspace),
+            KeyCode::Char(c) => Some(Message::SearchInput(c)),
+            KeyCode::Down | KeyCode::Tab => Some(Message::NextMatch),
+            KeyCode::Up | KeyCode::BackTab => Some(Message::PrevMatch),
+            _ => None,
+        },
     }
 }
 
