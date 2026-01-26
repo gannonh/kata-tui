@@ -2,58 +2,31 @@ name: Release
 
 on:
   push:
-    branches: [main]
+    tags:
+      - 'v*'  # Trigger only on version tags (e.g., v0.2.0)
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  check-version:
-    name: Check Version
+  get-version:
+    name: Get Version
     runs-on: ubuntu-latest
     outputs:
-      should_release: ${{ steps.check.outputs.should_release }}
-      version: ${{ steps.check.outputs.version }}
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get local version
-        id: local
+      - name: Extract version from tag
+        id: version
         run: |
-          VERSION=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
+          VERSION="${GITHUB_REF#refs/tags/v}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Local version: $VERSION"
-
-      - name: Get crates.io version
-        id: published
-        run: |
-          CRATE_NAME=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].name')
-          PUBLISHED=$(cargo search "$CRATE_NAME" --limit 1 2>/dev/null | grep "^$CRATE_NAME " | sed 's/.*= "\([^"]*\)".*/\1/' || echo "")
-          echo "version=$PUBLISHED" >> $GITHUB_OUTPUT
-          echo "Published version: $PUBLISHED"
-
-      - name: Check if should release
-        id: check
-        run: |
-          LOCAL="${{ steps.local.outputs.version }}"
-          PUBLISHED="${{ steps.published.outputs.version }}"
-
-          if [ -z "$PUBLISHED" ]; then
-            echo "Package not yet published, will release"
-            echo "should_release=true" >> $GITHUB_OUTPUT
-          elif [ "$LOCAL" != "$PUBLISHED" ]; then
-            echo "Version changed ($PUBLISHED -> $LOCAL), will release"
-            echo "should_release=true" >> $GITHUB_OUTPUT
-          else
-            echo "Version unchanged ($LOCAL), skipping release"
-            echo "should_release=false" >> $GITHUB_OUTPUT
-          fi
-          echo "version=$LOCAL" >> $GITHUB_OUTPUT
+          echo "Release version: $VERSION"
 
   publish:
     name: Publish to crates.io
-    needs: check-version
-    if: needs.check-version.outputs.should_release == 'true'
+    needs: get-version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -68,8 +41,7 @@ jobs:
 
   build-binaries:
     name: Build Binaries
-    needs: check-version
-    if: needs.check-version.outputs.should_release == 'true'
+    needs: get-version
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -121,7 +93,7 @@ jobs:
 
   create-release:
     name: Create GitHub Release
-    needs: [check-version, publish, build-binaries]
+    needs: [get-version, publish, build-binaries]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -144,8 +116,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ needs.check-version.outputs.version }}
-          name: v${{ needs.check-version.outputs.version }}
+          tag_name: v${{ needs.get-version.outputs.version }}
+          name: v${{ needs.get-version.outputs.version }}
           generate_release_notes: true
           make_latest: true
           files: release/*
