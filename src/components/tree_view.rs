@@ -77,8 +77,11 @@ fn truncate_text(text: &str, max_len: usize) -> String {
     let char_count = text.chars().count();
     if char_count <= max_len {
         text.to_string()
+    } else if max_len <= 3 {
+        // Not enough room for text + ellipsis, just take first max_len chars
+        text.chars().take(max_len).collect()
     } else {
-        let truncated: String = text.chars().take(max_len.saturating_sub(3)).collect();
+        let truncated: String = text.chars().take(max_len - 3).collect();
         format!("{}...", truncated)
     }
 }

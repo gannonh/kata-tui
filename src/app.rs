@@ -110,6 +110,11 @@ impl App {
                     Event::Tick => {
                         // TODO(Phase 3): Refresh data from .planning/ files
                     }
+                    Event::Error(e) => {
+                        // Log error after terminal is restored (on drop)
+                        eprintln!("Terminal event error: {}", e);
+                        break;
+                    }
                 }
             }
         }
