@@ -24,7 +24,7 @@ impl<'a> StatusBar<'a> {
     }
 }
 
-impl<'a> Widget for StatusBar<'a> {
+impl Widget for StatusBar<'_> {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let pane_indicator = match self.focused_pane {
             FocusedPane::Tree => "Tree",

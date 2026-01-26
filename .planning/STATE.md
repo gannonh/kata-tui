@@ -4,17 +4,17 @@
 
 **Core Value:** Visibility into Kata project status at a glance - phases, milestones, plans, and recent activity in one terminal dashboard.
 
-**Current Focus:** v1.0 MVP — Phase 2 (Enhanced Display & Navigation)
+**Current Focus:** v1.0 MVP — Phase 3 (Real-time Updates & Markdown Rendering)
 
 ## Current Position
 
 **Milestone:** v1.0 MVP (Phases 2-5)
-**Phase:** 2 - Enhanced Display & Navigation
+**Phase:** 3 - Real-time Updates & Markdown Rendering
 **Plan:** Not started
 **Status:** Ready to plan
-**Progress:** [██--------] 20% (1 of 5 phases complete)
+**Progress:** [████------] 40% (2 of 5 phases complete)
 
-**Last activity:** 2026-01-25 — v0.1 milestone complete
+**Last activity:** 2026-01-25 — Phase 2 complete
 
 ## Milestones
 
@@ -28,10 +28,10 @@
 | Metric | Value |
 |--------|-------|
 | Total Phases | 5 |
-| Phases Complete | 1 |
+| Phases Complete | 2 |
 | Current Phase Progress | 0% |
 | v1.0 Requirements | 12 |
-| Requirements Complete | 0 |
+| Requirements Complete | 5 |
 
 ## Accumulated Context
 
@@ -47,6 +47,9 @@
 | Semantic tree hierarchy | Users care about phases/requirements, not file names | Implemented |
 | Auto-select current phase | Focus on tree view at launch for immediate context | Implemented |
 | Minimum terminal 60x16 | Graceful handling with friendly message for small terminals | Implemented |
+| InputMode enum for modal input | Clean separation of Normal/Search/Help key handling | Implemented |
+| nucleo-matcher for fuzzy search | Fast, high-quality fuzzy matching used by Helix editor | Implemented |
+| Unicode progress indicators | ▼/▶ for expand, █/░ for progress bars - clear visual hierarchy | Implemented |
 
 ### Technical Notes
 
@@ -55,13 +58,13 @@
 - Critical pitfall: File watcher needs debouncing to prevent excessive re-parsing — Phase 3
 - Research flag: Phase 4 may need deeper research if interactive PTY support required
 
-### Next Phase Focus (Phase 2)
+### Next Phase Focus (Phase 3)
 
-1. Color-coded status indicators (green/yellow/red for phases)
-2. Progress bars showing completion percentages
-3. Expand/collapse tree nodes (Enter/right arrow)
-4. Help overlay (? key)
-5. Fuzzy search/filter (/ key)
+1. REAL-01: File watching for .planning/ directory changes
+2. REAL-02: Automatic UI refresh when files change
+3. REND-01: Markdown rendering in detail pane (bold, italic, code, lists, headers)
+
+**Research Notes:** Must implement file watcher debouncing (100-500ms) to prevent event flooding.
 
 ### Blockers
 
@@ -71,19 +74,18 @@ None currently.
 
 ### Last Session
 
-v0.1 Foundation Preview milestone completed. All Phase 1 plans executed:
-- 01-01: Project scaffolding, terminal wrapper, panic hook
-- 01-02: TEA core (State/Message/Update) and event handler
-- 01-03: Data models and markdown parser
-- 01-04: Layout and UI components
-- 01-05: View composition, App lifecycle, integration
+Phase 2: Enhanced Display & Navigation completed. All 5 plans executed:
+- 02-01: InputMode state machine + color-coded status indicators (DISP-04)
+- 02-02: Expand/collapse tree nodes with ▼/▶ indicators (NAV-03)
+- 02-03: Progress bars showing completion percentages (DISP-05)
+- 02-04: Help overlay with keybindings via ? key (NAV-04)
+- 02-05: Fuzzy search/filter with nucleo-matcher via / key (NAV-05)
 
-11 unit tests passing. Application runs and displays planning data.
-Milestone archived to `.planning/milestones/v0.1-*`.
+22 unit tests passing. All clippy warnings resolved.
 
 ### Context for Next Session
 
-Ready for Phase 2: Enhanced Display & Navigation. Run `/kata:plan-phase 2` to begin.
+Ready for Phase 3: Real-time Updates & Markdown Rendering. Run `/kata:plan-phase 3` to begin.
 
 ---
-*Last updated: 2026-01-25 after v0.1 milestone*
+*Last updated: 2026-01-25 after Phase 2 complete*

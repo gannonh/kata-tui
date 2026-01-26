@@ -84,23 +84,50 @@ impl<'a> DetailPane<'a> {
     }
 
     fn build_phase_content(&self, phase: &crate::data::Phase) -> Text<'static> {
+        let percentage = phase.completion_percentage();
+        let progress_color = if percentage >= 100.0 {
+            Color::Green
+        } else if percentage > 0.0 {
+            Color::Yellow
+        } else {
+            Color::DarkGray
+        };
+
         let mut lines = vec![
             Line::from(vec![Span::styled(
                 format!("Phase {}: {}", phase.number, phase.name),
                 Style::default().add_modifier(Modifier::BOLD),
             )]),
             Line::from(""),
-            Line::from(vec![Span::styled(
-                "Goal: ",
-                Style::default().fg(Color::Yellow),
-            )]),
-            Line::from(phase.goal.clone()),
-            Line::from(""),
-            Line::from(vec![Span::styled(
-                "Requirements:",
-                Style::default().fg(Color::Yellow),
-            )]),
         ];
+
+        // Add visual progress bar
+        let bar_width: usize = 20;
+        let filled = ((percentage / 100.0) * bar_width as f32).round() as usize;
+        let empty = bar_width.saturating_sub(filled);
+        let progress_bar = format!("{}{}", "█".repeat(filled), "░".repeat(empty));
+
+        lines.push(Line::from(vec![
+            Span::styled("Progress: ", Style::default().fg(Color::Yellow)),
+            Span::styled(progress_bar, Style::default().fg(progress_color)),
+            Span::raw(" "),
+            Span::styled(
+                format!("{:.0}%", percentage),
+                Style::default().fg(progress_color),
+            ),
+        ]));
+        lines.push(Line::from(""));
+
+        lines.push(Line::from(vec![Span::styled(
+            "Goal: ",
+            Style::default().fg(Color::Yellow),
+        )]));
+        lines.push(Line::from(phase.goal.clone()));
+        lines.push(Line::from(""));
+        lines.push(Line::from(vec![Span::styled(
+            "Requirements:",
+            Style::default().fg(Color::Yellow),
+        )]));
 
         for req in &phase.requirements {
             let status = match req.status {
@@ -108,10 +135,15 @@ impl<'a> DetailPane<'a> {
                 crate::data::RequirementStatus::InProgress => "[~]",
                 crate::data::RequirementStatus::Pending => "[ ]",
             };
-            lines.push(Line::from(format!(
-                "  {} {}: {}",
-                status, req.id, req.description
-            )));
+            let status_color = req.status.color();
+            lines.push(Line::from(vec![
+                Span::raw("  "),
+                Span::styled(status, Style::default().fg(status_color)),
+                Span::raw(" "),
+                Span::styled(req.id.clone(), Style::default().fg(Color::Cyan)),
+                Span::raw(": "),
+                Span::raw(req.description.clone()),
+            ]));
         }
 
         // Add completion stats
@@ -123,13 +155,8 @@ impl<'a> DetailPane<'a> {
         let total = phase.requirements.len();
         lines.push(Line::from(""));
         lines.push(Line::from(vec![
-            Span::styled("Progress: ", Style::default().fg(Color::Yellow)),
-            Span::raw(format!(
-                "{}/{} requirements complete ({:.0}%)",
-                complete,
-                total,
-                phase.completion_percentage()
-            )),
+            Span::styled("Summary: ", Style::default().fg(Color::Yellow)),
+            Span::raw(format!("{}/{} requirements complete", complete, total)),
         ]));
 
         Text::from(lines)
@@ -179,7 +206,7 @@ impl<'a> DetailPane<'a> {
     }
 }
 
-impl<'a> Widget for DetailPane<'a> {
+impl Widget for DetailPane<'_> {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let border_style = if self.focused {
             Style::default().fg(Color::Cyan)

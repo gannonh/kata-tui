@@ -13,6 +13,8 @@ pub enum Event {
     Resize(u16, u16),
     /// Periodic tick (for future animations/updates)
     Tick,
+    /// Terminal event error (allows main loop to handle gracefully)
+    Error(String),
 }
 
 /// Async event handler
@@ -62,10 +64,18 @@ impl EventHandler {
                                             break;
                                         }
                                     }
-                                    _ => {}
+                                    // Mouse, Paste, Focus events intentionally ignored
+                                    CrosstermEvent::Mouse(_)
+                                    | CrosstermEvent::Paste(_)
+                                    | CrosstermEvent::FocusGained
+                                    | CrosstermEvent::FocusLost => {}
                                 }
                             }
-                            Some(Err(_)) => break,
+                            Some(Err(e)) => {
+                                // Send error to main loop for graceful handling
+                                let _ = tx.send(Event::Error(e.to_string()));
+                                break;
+                            }
                             None => break,
                         }
                     }
