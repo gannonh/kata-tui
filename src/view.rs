@@ -4,9 +4,9 @@ use ratatui::Frame;
 
 use crate::components::tree_view::{TreeItem, TreeView};
 use crate::components::{DetailPane, HelpOverlay, SearchInput, StatusBar};
-use crate::state::InputMode;
 use crate::data::PlanningData;
 use crate::layout::{compute_layout, is_terminal_too_small};
+use crate::state::InputMode;
 use crate::state::{AppState, FocusedPane};
 
 /// Render the entire UI

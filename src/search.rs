@@ -22,7 +22,12 @@ impl FuzzyMatcher {
             return Some(0); // Empty query matches everything
         }
 
-        let pattern = Pattern::new(query, CaseMatching::Ignore, Normalization::Smart, AtomKind::Fuzzy);
+        let pattern = Pattern::new(
+            query,
+            CaseMatching::Ignore,
+            Normalization::Smart,
+            AtomKind::Fuzzy,
+        );
 
         let mut haystack_buf = Vec::new();
         let haystack_str = Utf32Str::new(haystack, &mut haystack_buf);

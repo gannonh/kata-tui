@@ -111,7 +111,10 @@ impl<'a> DetailPane<'a> {
             Span::styled("Progress: ", Style::default().fg(Color::Yellow)),
             Span::styled(progress_bar, Style::default().fg(progress_color)),
             Span::raw(" "),
-            Span::styled(format!("{:.0}%", percentage), Style::default().fg(progress_color)),
+            Span::styled(
+                format!("{:.0}%", percentage),
+                Style::default().fg(progress_color),
+            ),
         ]));
         lines.push(Line::from(""));
 

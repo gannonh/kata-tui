@@ -46,10 +46,7 @@ impl TreeItem {
                 };
                 ListItem::new(Line::from(vec![
                     Span::raw("  "),
-                    Span::styled(
-                        status_icon,
-                        Style::default().fg(phase.status.color()),
-                    ),
+                    Span::styled(status_icon, Style::default().fg(phase.status.color())),
                     Span::raw(" "),
                     Span::styled(
                         format!("Phase {}: {}", phase.number, phase.name),
@@ -65,10 +62,7 @@ impl TreeItem {
                 };
                 ListItem::new(Line::from(vec![
                     Span::raw("    "),
-                    Span::styled(
-                        status_icon,
-                        Style::default().fg(requirement.status.color()),
-                    ),
+                    Span::styled(status_icon, Style::default().fg(requirement.status.color())),
                     Span::raw(" "),
                     Span::styled(requirement.id.clone(), Style::default().fg(Color::Cyan)),
                     Span::raw(": "),
