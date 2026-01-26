@@ -14,16 +14,41 @@ pub struct PlanningData {
 }
 
 /// Load all planning data from a .planning/ directory
+///
+/// Returns defaults for missing files. Logs warnings for other errors (permissions, corruption).
 pub fn load_planning_data(planning_dir: &Path) -> Result<PlanningData> {
-    let project = load_project(&planning_dir.join("PROJECT.md")).unwrap_or_default();
-    let roadmap = load_roadmap(&planning_dir.join("ROADMAP.md")).unwrap_or_default();
-    let state = load_state(&planning_dir.join("STATE.md")).unwrap_or_default();
+    let project = load_file_with_fallback(&planning_dir.join("PROJECT.md"), load_project);
+    let roadmap = load_file_with_fallback(&planning_dir.join("ROADMAP.md"), load_roadmap);
+    let state = load_file_with_fallback(&planning_dir.join("STATE.md"), load_state);
 
     Ok(PlanningData {
         project,
         roadmap,
         state,
     })
+}
+
+/// Load a file with fallback to default, logging non-NotFound errors
+fn load_file_with_fallback<T, F>(path: &Path, loader: F) -> T
+where
+    T: Default,
+    F: FnOnce(&Path) -> Result<T>,
+{
+    match loader(path) {
+        Ok(data) => data,
+        Err(e) => {
+            // Check if it's a file-not-found error (acceptable)
+            let is_not_found = e
+                .root_cause()
+                .downcast_ref::<std::io::Error>()
+                .is_some_and(|io_err| io_err.kind() == std::io::ErrorKind::NotFound);
+
+            if !is_not_found {
+                eprintln!("Warning: Failed to load {}: {}", path.display(), e);
+            }
+            T::default()
+        }
+    }
 }
 
 /// Parse PROJECT.md
@@ -120,7 +145,10 @@ fn load_roadmap(path: &Path) -> Result<Roadmap> {
                 let rest = rest.trim();
                 // Format: "N: Name" or just "N"
                 let parts: Vec<&str> = rest.splitn(2, ':').collect();
-                let number = parts[0].trim().parse().unwrap_or(0);
+                let number = parts
+                    .first()
+                    .and_then(|s| s.trim().parse().ok())
+                    .unwrap_or(0);
                 let name = parts
                     .get(1)
                     .map(|s| s.trim().to_string())
@@ -213,7 +241,10 @@ fn load_state(path: &Path) -> Result<PlanningState> {
             let rest = trimmed.strip_prefix("**Phase:**").unwrap_or("").trim();
             // Format: "N - Name"
             let parts: Vec<&str> = rest.splitn(2, '-').collect();
-            state.current_phase = parts[0].trim().parse().unwrap_or(0);
+            state.current_phase = parts
+                .first()
+                .and_then(|s| s.trim().parse().ok())
+                .unwrap_or(0);
             state.current_phase_name = parts
                 .get(1)
                 .map(|s| s.trim().to_string())

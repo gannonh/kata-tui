@@ -32,13 +32,9 @@ impl Default for HelpOverlay {
 
 impl Widget for HelpOverlay {
     fn render(self, area: Rect, buf: &mut Buffer) {
-        // Calculate centered popup (60% width, 70% height)
         let popup_area = Self::popup_area(area, 60, 70);
-
-        // Clear the background
         Clear.render(popup_area, buf);
 
-        // Build help content
         let help_lines = vec![
             Line::from(Span::styled(
                 "Keybindings",

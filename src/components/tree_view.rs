@@ -29,9 +29,8 @@ impl TreeItem {
             _ => None,
         }
     }
-}
 
-impl TreeItem {
+    /// Convert to a ratatui ListItem for rendering
     pub fn to_list_item(&self) -> ListItem<'static> {
         match self {
             TreeItem::Project(name) => ListItem::new(Line::from(vec![
@@ -73,12 +72,14 @@ impl TreeItem {
     }
 }
 
-/// Truncate text to max_len with ellipsis
+/// Truncate text to max_len characters with ellipsis (UTF-8 safe)
 fn truncate_text(text: &str, max_len: usize) -> String {
-    if text.len() <= max_len {
+    let char_count = text.chars().count();
+    if char_count <= max_len {
         text.to_string()
     } else {
-        format!("{}...", &text[..max_len.saturating_sub(3)])
+        let truncated: String = text.chars().take(max_len.saturating_sub(3)).collect();
+        format!("{}...", truncated)
     }
 }
 

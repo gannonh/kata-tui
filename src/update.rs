@@ -1,13 +1,10 @@
 use crate::state::{AppState, FocusedPane, InputMode, Message};
 
-/// Maximum number of items in tree (will be dynamic later)
-const MAX_TREE_ITEMS: usize = 10;
-
 /// TEA Update function - handles all state transitions
 ///
-/// Takes the current state and a message, returns whether state changed.
-/// This is the ONLY place state mutations happen (TEA pattern).
-pub fn update(state: &mut AppState, message: Message) -> bool {
+/// Takes the current state, a message, and the current tree length for bounds checking.
+/// Returns whether state changed. This is the ONLY place state mutations happen (TEA pattern).
+pub fn update(state: &mut AppState, message: Message, tree_len: usize) -> bool {
     match message {
         Message::Quit => {
             state.should_quit = true;
@@ -38,8 +35,7 @@ pub fn update(state: &mut AppState, message: Message) -> bool {
         Message::NavigateDown => match state.focused_pane {
             FocusedPane::Tree => {
                 let current = state.tree_state.selected().unwrap_or(0);
-                // MAX_TREE_ITEMS is placeholder, will be replaced with actual data length
-                if current < MAX_TREE_ITEMS.saturating_sub(1) {
+                if tree_len > 0 && current < tree_len.saturating_sub(1) {
                     state.tree_state.select(Some(current + 1));
                     state.selected_index = current + 1;
                     true
@@ -58,7 +54,7 @@ pub fn update(state: &mut AppState, message: Message) -> bool {
                 state.focused_pane = FocusedPane::Tree;
                 true
             } else {
-                // In tree: would collapse node (future)
+                // In tree: collapse handled by app layer via maybe_convert_to_expand_message
                 false
             }
         }
@@ -68,13 +64,12 @@ pub fn update(state: &mut AppState, message: Message) -> bool {
                 state.focused_pane = FocusedPane::Detail;
                 true
             } else {
-                // In detail: no action
                 false
             }
         }
 
         Message::Select => {
-            // Enter key: expand/collapse in tree (future) or switch to detail
+            // Enter key in tree: expand/collapse handled by app layer, fallback switches to detail
             if state.focused_pane == FocusedPane::Tree {
                 state.focused_pane = FocusedPane::Detail;
                 true
@@ -130,13 +125,13 @@ pub fn update(state: &mut AppState, message: Message) -> bool {
 
         Message::ExitSearchMode => {
             state.input_mode = InputMode::Normal;
-            // Keep search_query so user can see what they searched
+            // Preserve search_query for status display; cleared on next EnterSearchMode
             true
         }
 
         Message::SearchInput(c) => {
             state.search_query.push(c);
-            // Matches will be computed in app layer with access to tree_items
+            // Matches recomputed in app layer (has access to tree_items for fuzzy matching)
             true
         }
 
@@ -146,9 +141,7 @@ pub fn update(state: &mut AppState, message: Message) -> bool {
         }
 
         Message::ConfirmSearch => {
-            if !state.search_matches.is_empty() {
-                // Select the current match
-                let match_idx = state.search_matches[state.current_match];
+            if let Some(&match_idx) = state.search_matches.get(state.current_match) {
                 state.tree_state.select(Some(match_idx));
                 state.selected_index = match_idx;
             }
@@ -159,9 +152,10 @@ pub fn update(state: &mut AppState, message: Message) -> bool {
         Message::NextMatch => {
             if !state.search_matches.is_empty() {
                 state.current_match = (state.current_match + 1) % state.search_matches.len();
-                let match_idx = state.search_matches[state.current_match];
-                state.tree_state.select(Some(match_idx));
-                state.selected_index = match_idx;
+                if let Some(&match_idx) = state.search_matches.get(state.current_match) {
+                    state.tree_state.select(Some(match_idx));
+                    state.selected_index = match_idx;
+                }
             }
             true
         }
@@ -169,19 +163,20 @@ pub fn update(state: &mut AppState, message: Message) -> bool {
         Message::PrevMatch => {
             if !state.search_matches.is_empty() {
                 state.current_match = if state.current_match == 0 {
-                    state.search_matches.len() - 1
+                    state.search_matches.len().saturating_sub(1)
                 } else {
                     state.current_match - 1
                 };
-                let match_idx = state.search_matches[state.current_match];
-                state.tree_state.select(Some(match_idx));
-                state.selected_index = match_idx;
+                if let Some(&match_idx) = state.search_matches.get(state.current_match) {
+                    state.tree_state.select(Some(match_idx));
+                    state.selected_index = match_idx;
+                }
             }
             true
         }
 
         Message::Tick => {
-            // Future: refresh data, animations
+            // TODO(Phase 3): Periodic data refresh from .planning/ files
             false
         }
     }
@@ -238,12 +233,14 @@ pub fn key_to_message(key: crossterm::event::KeyEvent, input_mode: InputMode) ->
 mod tests {
     use super::*;
 
+    const TEST_TREE_LEN: usize = 10;
+
     #[test]
     fn test_quit_sets_flag() {
         let mut state = AppState::new();
         assert!(!state.should_quit);
 
-        update(&mut state, Message::Quit);
+        update(&mut state, Message::Quit, TEST_TREE_LEN);
 
         assert!(state.should_quit);
     }
@@ -253,7 +250,7 @@ mod tests {
         let mut state = AppState::new();
         assert_eq!(state.tree_state.selected(), Some(0));
 
-        update(&mut state, Message::NavigateDown);
+        update(&mut state, Message::NavigateDown, TEST_TREE_LEN);
 
         assert_eq!(state.tree_state.selected(), Some(1));
     }
@@ -263,7 +260,7 @@ mod tests {
         let mut state = AppState::new();
         assert_eq!(state.tree_state.selected(), Some(0));
 
-        let changed = update(&mut state, Message::NavigateUp);
+        let changed = update(&mut state, Message::NavigateUp, TEST_TREE_LEN);
 
         assert!(!changed);
         assert_eq!(state.tree_state.selected(), Some(0));
@@ -274,10 +271,105 @@ mod tests {
         let mut state = AppState::new();
         assert_eq!(state.focused_pane, FocusedPane::Tree);
 
-        update(&mut state, Message::SwitchPane);
+        update(&mut state, Message::SwitchPane, TEST_TREE_LEN);
         assert_eq!(state.focused_pane, FocusedPane::Detail);
 
-        update(&mut state, Message::SwitchPane);
+        update(&mut state, Message::SwitchPane, TEST_TREE_LEN);
         assert_eq!(state.focused_pane, FocusedPane::Tree);
+    }
+
+    #[test]
+    fn test_navigate_down_respects_tree_bounds() {
+        let mut state = AppState::new();
+        state.tree_state.select(Some(2)); // At position 2
+        state.selected_index = 2;
+
+        // With tree_len=3, can't go past index 2
+        let changed = update(&mut state, Message::NavigateDown, 3);
+
+        assert!(!changed);
+        assert_eq!(state.tree_state.selected(), Some(2));
+    }
+
+    #[test]
+    fn test_navigate_down_empty_tree() {
+        let mut state = AppState::new();
+
+        let changed = update(&mut state, Message::NavigateDown, 0);
+
+        assert!(!changed);
+    }
+
+    #[test]
+    fn test_search_backspace_on_empty_is_safe() {
+        let mut state = AppState::new();
+        update(&mut state, Message::EnterSearchMode, TEST_TREE_LEN);
+
+        // Backspace on empty string should not panic
+        let changed = update(&mut state, Message::SearchBackspace, TEST_TREE_LEN);
+
+        assert!(changed);
+        assert!(state.search_query.is_empty());
+    }
+
+    #[test]
+    fn test_confirm_search_with_no_matches() {
+        let mut state = AppState::new();
+        state.input_mode = InputMode::Search;
+        state.search_matches = vec![]; // No matches
+
+        let changed = update(&mut state, Message::ConfirmSearch, TEST_TREE_LEN);
+
+        assert!(changed);
+        assert_eq!(state.input_mode, InputMode::Normal);
+    }
+
+    #[test]
+    fn test_next_match_wraps_around() {
+        let mut state = AppState::new();
+        state.search_matches = vec![2, 5, 8];
+        state.current_match = 2; // Last match
+
+        update(&mut state, Message::NextMatch, TEST_TREE_LEN);
+
+        assert_eq!(state.current_match, 0); // Wrapped to first
+    }
+
+    #[test]
+    fn test_prev_match_wraps_from_zero() {
+        let mut state = AppState::new();
+        state.search_matches = vec![2, 5, 8];
+        state.current_match = 0;
+
+        update(&mut state, Message::PrevMatch, TEST_TREE_LEN);
+
+        assert_eq!(state.current_match, 2); // Wrapped to last
+    }
+
+    #[test]
+    fn test_show_hide_help() {
+        let mut state = AppState::new();
+        assert_eq!(state.input_mode, InputMode::Normal);
+
+        update(&mut state, Message::ShowHelp, TEST_TREE_LEN);
+        assert_eq!(state.input_mode, InputMode::Help);
+
+        update(&mut state, Message::HideHelp, TEST_TREE_LEN);
+        assert_eq!(state.input_mode, InputMode::Normal);
+    }
+
+    #[test]
+    fn test_enter_search_clears_previous_state() {
+        let mut state = AppState::new();
+        state.search_query = "old query".to_string();
+        state.search_matches = vec![1, 2, 3];
+        state.current_match = 2;
+
+        update(&mut state, Message::EnterSearchMode, TEST_TREE_LEN);
+
+        assert!(state.search_query.is_empty());
+        assert!(state.search_matches.is_empty());
+        assert_eq!(state.current_match, 0);
+        assert_eq!(state.input_mode, InputMode::Search);
     }
 }

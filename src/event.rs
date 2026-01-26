@@ -62,10 +62,17 @@ impl EventHandler {
                                             break;
                                         }
                                     }
-                                    _ => {}
+                                    // Mouse, Paste, Focus events intentionally ignored
+                                    CrosstermEvent::Mouse(_)
+                                    | CrosstermEvent::Paste(_)
+                                    | CrosstermEvent::FocusGained
+                                    | CrosstermEvent::FocusLost => {}
                                 }
                             }
-                            Some(Err(_)) => break,
+                            Some(Err(e)) => {
+                                eprintln!("Terminal event error: {:?}", e);
+                                break;
+                            }
                             None => break,
                         }
                     }

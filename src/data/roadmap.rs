@@ -29,7 +29,7 @@ impl RequirementStatus {
 }
 
 /// A single requirement (e.g., DISP-01)
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Requirement {
     /// Requirement ID (e.g., "DISP-01")
     pub id: String,
@@ -60,7 +60,7 @@ impl PhaseStatus {
 }
 
 /// A project phase
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Phase {
     /// Phase number (1, 2, 3...)
     pub number: u8,
@@ -98,4 +98,86 @@ pub struct Roadmap {
     pub overview: String,
     /// All phases
     pub phases: Vec<Phase>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_completion_percentage_empty_requirements() {
+        let phase = Phase::default();
+        assert_eq!(phase.completion_percentage(), 0.0);
+    }
+
+    #[test]
+    fn test_completion_percentage_all_complete() {
+        let phase = Phase {
+            requirements: vec![
+                Requirement {
+                    status: RequirementStatus::Complete,
+                    ..Default::default()
+                },
+                Requirement {
+                    status: RequirementStatus::Complete,
+                    ..Default::default()
+                },
+            ],
+            ..Default::default()
+        };
+        assert_eq!(phase.completion_percentage(), 100.0);
+    }
+
+    #[test]
+    fn test_completion_percentage_none_complete() {
+        let phase = Phase {
+            requirements: vec![
+                Requirement {
+                    status: RequirementStatus::Pending,
+                    ..Default::default()
+                },
+                Requirement {
+                    status: RequirementStatus::InProgress,
+                    ..Default::default()
+                },
+            ],
+            ..Default::default()
+        };
+        assert_eq!(phase.completion_percentage(), 0.0);
+    }
+
+    #[test]
+    fn test_completion_percentage_partial() {
+        let phase = Phase {
+            requirements: vec![
+                Requirement {
+                    status: RequirementStatus::Complete,
+                    ..Default::default()
+                },
+                Requirement {
+                    status: RequirementStatus::Pending,
+                    ..Default::default()
+                },
+                Requirement {
+                    status: RequirementStatus::InProgress,
+                    ..Default::default()
+                },
+            ],
+            ..Default::default()
+        };
+        // 1 complete out of 3 = 33.33%
+        let percentage = phase.completion_percentage();
+        assert!((percentage - 33.33).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_status_colors() {
+        assert_eq!(PhaseStatus::Complete.color(), Color::Green);
+        assert_eq!(PhaseStatus::InProgress.color(), Color::Yellow);
+        assert_eq!(PhaseStatus::Pending.color(), Color::DarkGray);
+
+        assert_eq!(RequirementStatus::Complete.color(), Color::Green);
+        assert_eq!(RequirementStatus::InProgress.color(), Color::Yellow);
+        assert_eq!(RequirementStatus::Pending.color(), Color::DarkGray);
+    }
 }
