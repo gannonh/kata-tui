@@ -1,5 +1,7 @@
 # kata-tui
 
+⚠️ In early dev, not yet usable 
+
 A terminal dashboard for [Kata](https://github.com/anthropics/kata) project visibility.
 
 ## Overview
